@@ -1,5 +1,7 @@
 import os
 import time
+
+from functools import wraps
 from slackclient import SlackClient
 
 # starterbot's ID as an environment variable
@@ -13,6 +15,22 @@ EXAMPLE_COMMAND = "do"
 # instantiate Slack & Twilio clients
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 
+class JoeBot(object):
+    def __init__(self, api_key, bot_id):
+        self.api_key = api_key
+        self.bot_id = bot_id
+        self.rules = {}
+
+    def handles(*keywords, **options):
+        def decorator(func):
+        for word in keywords:
+            self.add_rule(word, func, **options)
+            return func
+        return decorator
+
+    def add_rule(self, keyword, callback):
+        self.rules[word] = callback
+
 
 def handle_command(command, channel):
     """
@@ -24,8 +42,7 @@ def handle_command(command, channel):
                "* command with numbers, delimited by spaces."
     if command.startswith(EXAMPLE_COMMAND):
         response = "Sure...write some more code then I can do that!"
-    slack_client.api_call("chat.postMessage", channel=channel,
-                          text=response, as_user=True)
+    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
 
 
 def parse_slack_output(slack_rtm_output):
@@ -42,6 +59,7 @@ def parse_slack_output(slack_rtm_output):
                 return output['text'].split(AT_BOT)[1].strip().lower(), \
                        output['channel']
     return None, None
+
 
 
 if __name__ == "__main__":
