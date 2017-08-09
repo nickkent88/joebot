@@ -38,12 +38,28 @@ class JoeBot(object):
         else:
             raise RuntimeError("Connection unsuccessful. Check Slack token and ID.")
 
-    def handler(self, message):
-        for word in message.split():
+    def message_handler(self, event):
+        for word in event['text'].split():
             if word in rules.keys():
                 return rules[word]
             else:
                 return rules[''] # return no-retort handler 
+
+    def typing_handler(self, event):
+        pass
+
+    def not_implemented_handler(self, event):
+        pass
+
+    def type_handler(self, event):
+        handlers = {
+            'message': self.message_handler,
+            'user_typing': self.typing_handler
+        }
+        if event['type'] in handlers:
+            return handlers[event['type']]
+        else:
+            return self.not_implemented_handler
             
     def parse_stream(self):
         output_list = self.client.rtm_read()
@@ -62,7 +78,11 @@ class JoeBot(object):
         time.sleep(1)
         print("Ideology! (JoeBot is awake and listening)")
         
+    def post_message(self, message, channel):
+        slack_client.api_call("chat.postMessage", channel=channel, text=message, as_user=True)
 
-    # slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
+    def get_users(self):
+        pass
 
-
+    def get_channels(self):
+        pass
