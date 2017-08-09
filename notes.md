@@ -57,3 +57,5 @@ https://github.com/howdyai/botkit/blob/master/docs/readme.md
 https://github.com/howdyai/botkit/blob/master/docs/readme-slack.md
 
 https://github.com/howdyai/botkit/blob/master/examples/slack_bot.js
+
+Make awkward comments sometimes when someone is writing or has edited a post
