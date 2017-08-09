@@ -4,33 +4,63 @@ import time
 from functools import wraps
 from slackclient import SlackClient
 
-# starterbot's ID as an environment variable
-SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
-BOT_ID = os.environ.get("BOT_ID")
-
-# constants
-AT_BOT = "<@" + BOT_ID + ">"
-EXAMPLE_COMMAND = "do"
-
-# instantiate Slack & Twilio clients
-slack_client = SlackClient(SLACK_BOT_TOKEN)
 
 class JoeBot(object):
-    def __init__(self, api_key, bot_id):
-        self.api_key = api_key
-        self.bot_id = bot_id
-        self.rules = {}
+    rules = {}
 
-    def handles(*keywords, **options):
+    @classmethod
+    def handles(cls, *keywords, **options):
         def decorator(func):
-        for word in keywords:
-            self.add_rule(word, func, **options)
+            for word in keywords:
+                cls.add_rule(word, func, **options)
             return func
         return decorator
 
-    def add_rule(self, keyword, callback):
-        self.rules[word] = callback
+    @classmethod
+    def add_rule(cls, word, callback):
+        cls.rules[word] = callback
 
+    def __init__(self, name, api_token, bot_id):
+        self.name = name
+        self.api_token = api_token
+        self.bot_id = bot_id
+        self.client = SlackClient(api_token)
+        
+    def listen(self):
+        read_period = 1 # read websocket every 1 second
+        if slack_client.rtm_connect():
+            while True:
+                command, channel = parse_slack_output(slack_client.rtm_read())
+                if command and channel:
+                    handle_command(command, channel)
+                time.sleep(read_period)
+        else:
+            raise RuntimeError("Connection unsuccessful. Check Slack token and ID.")
+
+    def handler(self, message):
+        for word in message.split():
+            if word in rules.keys():
+                return rules[word]
+            else:
+                return rules[''] # return no-retort handler 
+            
+    def parse_stream(self):
+        output_list = slack_client.rtm_read()
+        if output_list and len(output_list) > 0:
+            for output in output_list:
+                if output and 'text' in output and AT_BOT in output['text']:
+                    # return text after the @ mention, whitespace removed
+                    return output['text'].split(AT_BOT)[1].strip().lower(), \
+                        output['channel']
+        return None, None
+
+    def start_message(self):
+        print("Nudging JoeBot awake.")
+        time.sleep(1)
+        print("...")
+        time.sleept(1)
+        print("Ideology!")
+        
 
 def handle_command(command, channel):
     """
@@ -45,31 +75,3 @@ def handle_command(command, channel):
     slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
 
 
-def parse_slack_output(slack_rtm_output):
-    """
-        The Slack Real Time Messaging API is an events firehose.
-        this parsing function returns None unless a message is
-        directed at the Bot, based on its ID.
-    """
-    output_list = slack_rtm_output
-    if output_list and len(output_list) > 0:
-        for output in output_list:
-            if output and 'text' in output and AT_BOT in output['text']:
-                # return text after the @ mention, whitespace removed
-                return output['text'].split(AT_BOT)[1].strip().lower(), \
-                       output['channel']
-    return None, None
-
-
-
-if __name__ == "__main__":
-    READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
-    if slack_client.rtm_connect():
-        print("StarterBot connected and running!")
-        while True:
-            command, channel = parse_slack_output(slack_client.rtm_read())
-            if command and channel:
-                handle_command(command, channel)
-            time.sleep(READ_WEBSOCKET_DELAY)
-    else:
-        print("Connection failed. Invalid Slack token or bot ID?")
