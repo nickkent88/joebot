@@ -6,7 +6,7 @@ from joebot import JoeBot
 
 
 @pytest.fixture
-def testbot():
+def joe():
     # starterbot's ID as an environment variable
     SLACK_BOT_TOKEN = os.environ.get('SLACK_BOT_TOKEN')
     BOT_ID = os.environ.get("BOT_ID")
@@ -18,5 +18,6 @@ def testbot():
     joe = JoeBot('starterbot', SLACK_BOT_TOKEN, BOT_ID)
     return joe
 
-def test_connection(testbot):
+def test_connection(joe):
+    joe.wake()
     print(JoeBot.rules)

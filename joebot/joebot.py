@@ -26,11 +26,12 @@ class JoeBot(object):
         self.bot_id = bot_id
         self.client = SlackClient(api_token)
         
-    def listen(self):
+    def wake(self):
         read_period = 1 # read websocket every 1 second
-        if slack_client.rtm_connect():
+        if self.client.rtm_connect():
+            self.start_message()
             while True:
-                command, channel = parse_slack_output(slack_client.rtm_read())
+                command, channel = self.parse_stream()
                 if command and channel:
                     handle_command(command, channel)
                 time.sleep(read_period)
@@ -45,7 +46,7 @@ class JoeBot(object):
                 return rules[''] # return no-retort handler 
             
     def parse_stream(self):
-        output_list = slack_client.rtm_read()
+        output_list = self.client.rtm_read()
         if output_list and len(output_list) > 0:
             for output in output_list:
                 if output and 'text' in output and AT_BOT in output['text']:
@@ -55,23 +56,13 @@ class JoeBot(object):
         return None, None
 
     def start_message(self):
-        print("Nudging JoeBot awake.")
+        print("Nudging JoeBot awake...")
         time.sleep(1)
         print("...")
-        time.sleept(1)
-        print("Ideology!")
+        time.sleep(1)
+        print("Ideology! (JoeBot is awake and listening)")
         
 
-def handle_command(command, channel):
-    """
-        Receives commands directed at the bot and determines if they
-        are valid commands. If so, then acts on the commands. If not,
-        returns back what it needs for clarification.
-    """
-    response = "Not sure what you mean. Use the *" + EXAMPLE_COMMAND + \
-               "* command with numbers, delimited by spaces."
-    if command.startswith(EXAMPLE_COMMAND):
-        response = "Sure...write some more code then I can do that!"
-    slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
+    # slack_client.api_call("chat.postMessage", channel=channel, text=response, as_user=True)
 
 
