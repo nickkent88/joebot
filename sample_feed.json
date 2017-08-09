@@ -1,0 +1,58 @@
+{
+    'type': 'hello'
+} {
+    'type': 'reconnect_url',
+    'url': 'wss://mpmulti-dmkk.slack-msgs.com/websocket/Xf0fYD7ZjJ5R2doi2Ss7QUNULq-2TdF4ITXMsUshhzUU8hwLIavj6g_pV-a0PFsu2bkgHyl_sz48AChe5B9AOrZARGi2Tj4VvIDPaGnUNh2X4kP_JkIcpP-aSJxfncqkMVz2lckPBnNOO501sb7Cw8MdsIdfCXejoCusHdXcQlY='
+} {
+    'type': 'presence_change',
+    'presence': 'active',
+    'user': 'U5UD3LS2U'
+} {
+    'type': 'user_typing',
+    'channel': 'G5V408N76',
+    'user': 'U03P9DFQ5'
+} {
+    'type': 'message',
+    'channel': 'G5V408N76',
+    'user': 'U03P9DFQ5',
+    'text': 'testing',
+    'ts': '1502244986.247255',
+    'source_team': 'T03G1K5F5',
+    'team': 'T03G1K5F5'
+} {
+    'type': 'message',
+    'message': {
+        'type': 'message',
+        'user': 'U03P9DFQ5',
+        'text': 'testing <@U5UD3LS2U>',
+        'edited': {
+            'user': 'U03P9DFQ5',
+            'ts': '1502244996.000000'
+        },
+        'ts': '1502244986.247255'
+    },
+    'subtype': 'message_changed',
+    'hidden': True,
+    'channel': 'G5V408N76',
+    'previous_message': {
+        'type': 'message',
+        'user': 'U03P9DFQ5',
+        'text': 'testing',
+        'ts': '1502244986.247255'
+    },
+    'event_ts': '1502244996.249237',
+    'ts': '1502244996.249237'
+} {
+    'type': 'desktop_notification',
+    'title': 'tacochat',
+    'subtitle': 'bwahaha',
+    'msg': '1502244986.247255',
+    'content': 'nick: testing @starterbot',
+    'channel': 'G5V408N76',
+    'launchUri': 'slack://channel?id=G5V408N76&message=1502244986247255&team=T03G1K5F5',
+    'avatarImage': 'https://avatars.slack-edge.com/2015-02-20/3793428400_3da4ab663ac20a9293fb_72.jpg',
+    'ssbFilename': 'knock_brush.mp3',
+    'imageUri': None,
+    'is_shared': False,
+    'event_ts': '1502244996.335259'
+}
