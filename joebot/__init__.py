@@ -1,2 +1,1 @@
-from joebot.joebot import JoeBot
-import joebot.skills
+from joebot import JoeBot
