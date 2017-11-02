@@ -33,12 +33,12 @@ class JoeBot(object):
     def add_rule(cls, word, callback):
         cls.rules[word] = callback
 
-    def __init__(self, name, api_token, bot_id):
+    def __init__(self, name, api_token):
         self.name = name
         self.api_token = api_token
-        self.bot_id = bot_id
         self.client = SlackClient(api_token)
-        self.at_str = "<@" + bot_id + ">"
+        self.bot_id = self.get_id(self.name)
+        self.at_str = "<@" + self.bot_id + ">"
         
     def wake(self):
         read_period = 1 # read websocket every 1 second
@@ -133,3 +133,12 @@ class JoeBot(object):
             return api_call.get('members')
         else:
             return []
+
+    def get_id(self, name):
+        api_call = self.client.api_call("users.list")
+        if api_call.get('ok'):
+            # retrieve all users so we can find our bot
+            users = api_call.get('members')
+            for user in users:
+                if 'name' in user and user.get('name') == name:
+                    return user.get('id')
