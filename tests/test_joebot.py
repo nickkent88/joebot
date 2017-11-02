@@ -12,7 +12,6 @@ def joe():
     BOT_ID = os.environ.get("BOT_ID")
 
     # constants
-    AT_BOT = "<@" + BOT_ID + ">"
     EXAMPLE_COMMAND = "do"
 
     joe = JoeBot('starterbot', SLACK_BOT_TOKEN, BOT_ID)
